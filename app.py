@@ -91,7 +91,7 @@ def handle_question(data):
             ],
         )
 
-        # Extract the generated answer
+        # Extract the generated response
         answer = response['message']['content']
         emit('answer', {'text': answer})
     except Exception as e:
