@@ -76,6 +76,7 @@ def handle_question(data):
     # Construct the prompt to constrain answers within context and limit response length
     prompt = (
         f"You are a helpful assistant answering questions based strictly on the following transcript. "
+        f"Answer the question from the first person point of view of the speaker of the transcript."
         f"if the user greets you then politely greet them back. if the user says bye then respond appropriately as well"
         f"If the question is outside this content, reply with 'I'm sorry, but I can only answer questions related to the provided transcript.' "
         f"Answer concisely, limiting your response to 200 characters. Here is the transcript: {context}"
@@ -97,6 +98,12 @@ def handle_question(data):
     except Exception as e:
         emit('answer', {'text': f'Error generating response: {str(e)}'})
 
+# Add reset handler to clear transcript
+@socketio.on('reset_transcript')
+def handle_reset_transcript():
+    global transcript
+    transcript = []  # Clear the transcript
+    emit('load_transcript', {'transcript': transcript}, broadcast=True)  # Notify all clients of the reset
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
